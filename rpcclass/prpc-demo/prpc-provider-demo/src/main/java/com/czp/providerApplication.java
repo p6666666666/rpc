@@ -2,7 +2,7 @@ package com.czp;
 
 import com.czp.impl.HelloRpcImpl;
 
-public class Application {
+public class providerApplication {
     public static void main(String[] args) {
         //封装服务
         ServiceConfig<HelloRpc> service =new ServiceConfig<>();
