@@ -35,13 +35,18 @@ public class PrpcResponseEncoder extends MessageToByteEncoder<PrpcResponse> {
         byteBuf.writeByte(prpcResponse.getCompressType());
         //8字节请求id
         byteBuf.writeLong(prpcResponse.getRequestId());
+        byteBuf.writeLong(prpcResponse.getTimeStamp());
 
         //写入请求体
-        Serializer serializer= SerializerFactory.getSerializer(prpcResponse.getSerializeType()).getSerializer();
-        byte[] body = serializer.serialize(prpcResponse.getBody());
-        // 压缩
-        Compressor compressor = CompressFactory.getCompressor(prpcResponse.getCompressType()).getCompressor();
-        body=compressor.compress(body);
+        byte[] body=null;
+        if (prpcResponse.getBody()!=null){
+            Serializer serializer= SerializerFactory.getSerializer(prpcResponse.getSerializeType()).getImpl();
+            body = serializer.serialize(prpcResponse.getBody());
+            // 压缩
+            Compressor compressor = CompressFactory.getCompressor(prpcResponse.getCompressType()).getImpl();
+            body=compressor.compress(body);
+        }
+
 
         if (body!=null){
             byteBuf.writeBytes(body);

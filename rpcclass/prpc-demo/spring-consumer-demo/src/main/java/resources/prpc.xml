@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration SYSTEM "prpc-config.dtd">
+<configuration>
+    <port>8096</port>
+    <appName>prpc-default-appName</appName>
+    <registry url="zookeeper://120.27.214.4:2181"/>
+    <!-- 二选一 -->
+    <serializeType type="hessian"/>
+    <serializer code="3" name="hession" class="com.czp.serializer.impl.HessianSerializer"/>
+
+    <!-- 二选一 -->
+    <compressType type="gzip"/>
+    <compressor code="1" name="gzip"  class="com.czp.compress.impl.GzipCompressor"/>
+
+    <!-- 二选一 -->
+    <loadBalancerType type="minimumResponseTime"/>
+    <loadBalancer class="com.czp.loadbalancer.impl.MinimumResponseTimeLoadBalancer"/>
+
+
+    <idGenerator class="com.czp.IdGenerator" dataCenterId="2" machineId="4"/>
+</configuration>

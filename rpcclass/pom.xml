@@ -23,6 +23,7 @@
         <zookeeper.version>3.8.1</zookeeper.version>
         <hessian.version>4.0.66</hessian.version>
         <fastjson2.version>2.0.26</fastjson2.version>
+        <dom4j.version>1.1</dom4j.version>
 
     </properties>
 
@@ -69,6 +70,12 @@
                 <artifactId>hessian</artifactId>
                 <version>${hessian.version}</version>
             </dependency>
+            <dependency>
+                <groupId>dom4j</groupId>
+                <artifactId>dom4j</artifactId>
+                <version>${dom4j.version}</version>
+            </dependency>
+
 
         </dependencies>
 

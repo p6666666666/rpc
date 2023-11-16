@@ -17,12 +17,14 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.nio.ByteOrder;
+import java.util.Random;
 
 @Slf4j
 public class PrpcRequestDecoder extends LengthFieldBasedFrameDecoder {
 
     @Override
     protected Object decode(ChannelHandlerContext ctx, ByteBuf in) throws Exception {
+        Thread.sleep(new Random().nextInt(50));
         Object decode = super.decode(ctx, in);
         if (decode instanceof ByteBuf ){
             ByteBuf byteBuf=(ByteBuf) decode;
@@ -65,12 +67,16 @@ public class PrpcRequestDecoder extends LengthFieldBasedFrameDecoder {
         //请求id
         long requestId = byteBuf.readLong();
 
+        //时间戳
+        long timeStamp = byteBuf.readLong();
+
         //封装
         PrpcRequest prpcRequest=new PrpcRequest();
         prpcRequest.setRequestType(requestType);
         prpcRequest.setSerializeType(serializeType);
         prpcRequest.setCompressType(compressType);
         prpcRequest.setRequestId(requestId);
+        prpcRequest.setTimeStamp(timeStamp);
         // 心跳检测
         if (requestType== RequestType.HEART_BRAT.getId()){
             return prpcRequest;
@@ -80,14 +86,15 @@ public class PrpcRequestDecoder extends LengthFieldBasedFrameDecoder {
         byte[] payload=new byte[payloadLength];
         byteBuf.readBytes(payload);
 
-        //todo  解压缩
-        Compressor compressor = CompressFactory.getCompressor(prpcRequest.getCompressType()).getCompressor();
-        payload=compressor.decompress(payload);
-
+        //  解压缩
+        if (payload!=null &&payload.length!=0){
+            Compressor compressor = CompressFactory.getCompressor(prpcRequest.getCompressType()).getImpl();
+            payload=compressor.decompress(payload);
         //  反序列化
-        Serializer serializer = SerializerFactory.getSerializer(serializeType).getSerializer();
-        RequestPayload requestPayload = serializer.deserialize(payload, RequestPayload.class);
-        prpcRequest.setRequestPayload(requestPayload);
+            Serializer serializer = SerializerFactory.getSerializer(serializeType).getImpl();
+            RequestPayload requestPayload = serializer.deserialize(payload, RequestPayload.class);
+            prpcRequest.setRequestPayload(requestPayload);
+        }
         if (log.isDebugEnabled()){
             log.debug("请求【{}】已经在服务端完成解码工作",prpcRequest.getRequestId());
         }

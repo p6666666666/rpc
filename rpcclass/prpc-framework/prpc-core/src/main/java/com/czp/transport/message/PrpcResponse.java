@@ -16,6 +16,7 @@ public class PrpcResponse {
     //请求的类型,压缩的类型,序列化的方式
     private byte compressType;
     private byte serializeType;
+    private long timeStamp;
 
     //响应码 1:成功 2:异常
     private byte code;

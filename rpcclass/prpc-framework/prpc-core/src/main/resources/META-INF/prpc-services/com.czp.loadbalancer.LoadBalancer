@@ -1,0 +1,3 @@
+1-ConsistentHash-com.czp.loadbalancer.impl.ConsistentHashLoadBalancer
+2-minimumResponseTime-com.czp.loadbalancer.impl.MinimumResponseTimeLoadBalancer
+3-roundRobinLoad-com.czp.loadbalancer.impl.RoundRobinLoadBalancer

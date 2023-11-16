@@ -65,26 +65,31 @@ public class PrpcResponseDecoder extends LengthFieldBasedFrameDecoder {
         //请求id
         long requestId = byteBuf.readLong();
 
+        //时间戳
+        long timeStamp = byteBuf.readLong();
+
         //封装
         PrpcResponse prpcResponse = new PrpcResponse();
         prpcResponse.setCode(responseCode);
         prpcResponse.setSerializeType(serializeType);
         prpcResponse.setCompressType(compressType);
         prpcResponse.setRequestId(requestId);
+        prpcResponse.setTimeStamp(timeStamp);
 
         int bodyLength=fullLength-headLength;
         byte[] payload=new byte[bodyLength];
         byteBuf.readBytes(payload);
 
-        // 解压缩
-        Compressor compressor = CompressFactory.getCompressor(prpcResponse.getCompressType()).getCompressor();
-        payload = compressor.decompress(payload);
+        if (payload!=null &&payload.length>0){
+            // 解压缩
+            Compressor compressor = CompressFactory.getCompressor(prpcResponse.getCompressType()).getImpl();
+            payload = compressor.decompress(payload);
+            //  反序列化
+            Serializer serializer = SerializerFactory.getSerializer(serializeType).getImpl();
+            Object body = serializer.deserialize(payload, Object.class);
+            prpcResponse.setBody(body);
+        }
 
-
-        //  反序列化
-        Serializer serializer = SerializerFactory.getSerializer(serializeType).getSerializer();
-        Object body = serializer.deserialize(payload, Object.class);
-        prpcResponse.setBody(body);
         if (log.isDebugEnabled()){
             log.debug("响应【{}】已经在调用端晚成解码工作",requestId);
         }

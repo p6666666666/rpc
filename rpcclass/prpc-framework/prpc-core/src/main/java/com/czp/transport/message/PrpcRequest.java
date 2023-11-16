@@ -18,6 +18,8 @@ public class PrpcRequest {
     private byte compressType;
     private byte serializeType;
 
+    private long timeStamp;
+
     //消息体
     private RequestPayload requestPayload;
 }

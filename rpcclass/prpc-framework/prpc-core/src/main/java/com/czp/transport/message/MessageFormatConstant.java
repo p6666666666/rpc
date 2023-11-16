@@ -4,7 +4,7 @@ public class MessageFormatConstant {
 
     public final static byte[] MAGIC="prpc".getBytes();
     public final static byte VERSION=1;
-    public final static short HEADER_LENGTH=(byte)(MAGIC.length+1+2+4+1+1+1+8);
+    public final static short HEADER_LENGTH=(byte)(MAGIC.length+1+2+4+1+1+1+8+8);
 
     public final static short CURRENT_HEADER_LENGTH=2;
     public final static int MAX_FRAME_LENGTH=1024*1024;

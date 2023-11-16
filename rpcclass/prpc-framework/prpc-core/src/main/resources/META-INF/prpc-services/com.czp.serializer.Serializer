@@ -1,0 +1,2 @@
+1-jdk-com.czp.serializer.impl.JdkSerializer
+3-hessian-com.czp.serializer.impl.HessianSerializer

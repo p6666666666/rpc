@@ -1,6 +1,7 @@
 package com.czp.compress;
 
 import com.czp.compress.impl.GzipCompressor;
+import com.czp.config.ObjectWrapper;
 import com.czp.serializer.SerializerWrapper;
 import com.czp.serializer.impl.HessianSerializer;
 import com.czp.serializer.impl.JdkSerializer;
@@ -11,37 +12,33 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class CompressFactory {
 
-    private final static ConcurrentHashMap<String, CompressWrapper> COMPRESSOR_CACHE=new ConcurrentHashMap<>(8);
-    private final static ConcurrentHashMap<Byte,CompressWrapper> COMPRESSOR_CACHE_CODE=new ConcurrentHashMap<>(8);
-    static{
-        CompressWrapper gzip = new CompressWrapper((byte) 1, "gzip", new GzipCompressor());
-        COMPRESSOR_CACHE.put("gzip",gzip);
-
-        COMPRESSOR_CACHE_CODE.put((byte)1,gzip);
-
-
-    }
+    private final static ConcurrentHashMap<String, ObjectWrapper<Compressor>> COMPRESSOR_CACHE=new ConcurrentHashMap<>(8);
+    private final static ConcurrentHashMap<Byte,ObjectWrapper<Compressor>> COMPRESSOR_CACHE_CODE=new ConcurrentHashMap<>(8);
 
     /**
      * 工厂方法获取一个CompressWrapper
      * @param compressType)
      * @return
      */
-    public static CompressWrapper getCompressor(String compressType) {
-        CompressWrapper compressWrapper = COMPRESSOR_CACHE.get(compressType);
-        if (compressWrapper==null){
+    public static ObjectWrapper<Compressor> getCompressor(String compressType) {
+        ObjectWrapper<Compressor> wrapper = COMPRESSOR_CACHE.get(compressType);
+        if (wrapper==null){
             log.error("未找到你配置的【{}】压缩策略，默认选用gzip",compressType);
             return COMPRESSOR_CACHE.get("gzip");
         }
-        return compressWrapper;
+        return wrapper;
     }
-    public static CompressWrapper getCompressor(Byte compressCode) {
-        CompressWrapper compressWrapper = COMPRESSOR_CACHE_CODE.get(compressCode);
-        if (compressWrapper==null){
+    public static ObjectWrapper<Compressor> getCompressor(Byte compressCode) {
+        ObjectWrapper<Compressor> wrapper = COMPRESSOR_CACHE_CODE.get(compressCode);
+        if (wrapper==null){
             return COMPRESSOR_CACHE.get("gzip");
         }
-        return compressWrapper;
+        return wrapper;
 
+    }
+    public static void addCompressor(ObjectWrapper<Compressor> objectWrapper){
+        COMPRESSOR_CACHE.put(objectWrapper.getType(),objectWrapper);
+        COMPRESSOR_CACHE_CODE.put(objectWrapper.getCode(),objectWrapper);
     }
 
 }

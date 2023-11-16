@@ -8,14 +8,14 @@ public class providerApplication {
         ServiceConfig<HelloRpc> service =new ServiceConfig<>();
         service.setInterface(HelloRpc.class);
         service.setRef(new HelloRpcImpl());
+        service.setGroup("main");
         //定义注册中心
 
         //通过启动引导程序，启动服务提供方
         PrpcBootstrap.getInstance()
                 .application("first-prpc-provider")
-                .registry(new RegistryConfig("zookeeper://120.27.214.4:2181"))
-                .protocol(new ProtocolConfig("jdk"))
-                .publish(service)
+                .registry(new RegistryConfig("zookeeper://192.168.200.128:2181"))
+                .scan("com.czp")
                 .start();
 
     }

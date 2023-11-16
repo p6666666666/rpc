@@ -21,6 +21,11 @@
             <artifactId>prpc-core</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.czp</groupId>
+            <artifactId>prpc-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
 
 
     </dependencies>
